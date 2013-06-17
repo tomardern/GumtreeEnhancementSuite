@@ -240,8 +240,29 @@ ges.initInfinateScroll = function(){
 
 
 
+/* --------------------------------------------------
+Other Functions
+-----------------------------------------------------*/
+ges.initOtherFunctions = function(){
 
 
+	$(document).on("hover", ".price", function(){
+
+		priceText = $(this).text();
+		//If the price is per week, format it
+		if (priceText.indexOf("pw") > 0){
+			price = parseInt(priceText.replace("£",""));
+
+			priceText = "£" + price + "pw - £" + parseInt((price * 52) / 12) + "pcm";
+			$(this).attr("title",priceText);
+		}
+
+
+	});        // jQuery 1.7+
+
+
+
+};
 
 
 
@@ -285,6 +306,9 @@ initialize = function() {
 
 	//Alert on new ones
 	ges.alertOnNew();
+
+	//Initialise other useful functions
+	ges.initOtherFunctions();
 
 
 };
