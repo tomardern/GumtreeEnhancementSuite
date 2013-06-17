@@ -5,23 +5,29 @@ Variables Required
 ----------------------------*/
 ges = {}; //Gumtree Enhancement Suite
 ges.adverts = []; //Known and unknown locations
+ges.advertsString = ""; //String of all the adverts we have seen
 ges.counter = 0;
 ges.map = {};
+ges.pageTitle = ""; //Default Page Title
 
 
 
 
 ges.getLocations = function(){
 	locations = [];
+	locationString = "|";
+
+
 	$listings = $(".ad-listings li");
 	$listings.each(function(){
 		loc = $(this).find(".location").text();
 		desc = $(this).find(".description");
 		featured = $(this).find(".featured").length;
+		locationString += desc.attr("id") + "|";
 		locations.push({"id": desc.attr("id"), "location": loc, "featured": featured,
 			"link" : desc.attr("href"), latLng: {} });
 	});
-	return locations;
+	return {locations: locations, toString: locationString};
 };
 
 
@@ -100,6 +106,59 @@ ges.updateLongLat = function(index){
 			console.log(ges.adverts);
 		}
 };
+
+/* --------------------------------------------------
+Alert on new item
+-----------------------------------------------------*/
+ges.alertOnNew = function(){
+
+	//Set interval on checks
+	ges.interval = setInterval(function(){
+
+		$element = $("<div />"); //Element trick again
+		//Do a AJAX Load of this page
+		$element.load(window.location.href + "  .ad-listings li",function(){
+			counter = 0;
+			//Scan through and check if it exists
+			$("li",$element).each(function(){
+
+				id = $("a",$(this)).attr("id");
+
+				if (ges.advertsString.indexOf("|" + id + "|") == -1) {
+					//Ladies, this is a new advert we haven't seen before! Oh my.
+					counter++;
+
+					//TODO: Cache then add to DOM
+					$(".ad-listings").first().prepend($(this).addClass("ges-new").addClass("ges-added"));
+
+					//Add to array to stop adding again
+					ges.advertsString +=  id + "|";
+
+
+				}
+		});
+
+		console.log("GES | ADDED " + counter + " MORE RESULTS");
+
+		$gesNew = $(".ges-new");
+
+		$gesNew.hover(function(){
+			$(this).removeClass("ges-new");
+		});
+
+	 	document.title = "(" + $gesNew.length + ") " + ges.pageTitle;
+
+
+
+	});
+
+
+	}, 10000);
+
+
+};
+
+
 
 
 
@@ -189,7 +248,10 @@ initialize = function() {
 	ges.map = new google.maps.Map(document.getElementById("ges"), mapOptions);
 
 	//Get the locations
-	ges.adverts = ges.getLocations();
+	adverts = ges.getLocations()
+	ges.adverts = adverts.locations;
+	ges.advertsString = adverts.toString;
+	ges.pageTitle = document.title;
 
 	//Update the locations with Longitude/Latitude
 	//ges.updateLongLat(0);
@@ -198,6 +260,8 @@ initialize = function() {
 	//Load in the infinate scroll functionality
 	ges.initInfinateScroll();
 
+	//Alert on new ones
+	ges.alertOnNew();
 
 
 };
@@ -209,6 +273,8 @@ function loadScript() {
 	//Do some style changes
 	$("#main-content").css("padding-right","0px");
 
+	//Add some CSS
+	document.write("<style>.main-content-wrapper #search-results .ges-new {background:#DDFFBE;}#search-results .ges-added {background:#F5F5F5;}</style>");
 
 	$("#search-results").prepend("<div id='ges' style='height:400px;'></div>");
 	var script = document.createElement("script");
