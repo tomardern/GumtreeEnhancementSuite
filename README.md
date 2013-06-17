@@ -1,4 +1,5 @@
-# Gumtree Enhancement Suite (Chrome Extension)
+# Gumtree Enhancement Suite
+(Chrome Extension)
 
 ## Why?
 GumTree's website is missing a few "modern" features. This makes trawling through their site a little bit of a pain. When looking for rooms, they can be gone within a couple of hours, especially in busy cities where demand is high.
