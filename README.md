@@ -11,6 +11,7 @@ This Chrome extension/plugin will has the following features:
 - [x] Map location of adverts
 - [x] Notifications (in browser) of new adverts
 - [x] Works with the current search functionality
+- [x] Per week pricing calculates to Per-calendar-month pricing (price * 52) / 12
 
 ## How?
 GumTree has no API. This is a Pain. This plugin uses jQuery and AJAX to screen-scrape the relevent pages for information. As the extension works in-page, it is not Cross Domain. The chrome extension uses the following:
