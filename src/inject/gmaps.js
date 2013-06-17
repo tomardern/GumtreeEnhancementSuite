@@ -7,10 +7,12 @@ ges = {}; //Gumtree Enhancement Suite
 ges.advertsString = "|"; //String of all the adverts we have seen
 ges.map = {};
 ges.pageTitle = ""; //Default Page Title
+ges.markerCluster = {};
 
 
-
-
+/* --------------------------------------------------
+General for getting locations and data from listing pages
+-----------------------------------------------------*/
 ges.getLocations = function($listings){
 	locations = [];
 	locationString = "";
@@ -42,7 +44,9 @@ ges.getLocations = function($listings){
 };
 
 
-//Now that a location has been found,
+/* --------------------------------------------------
+Google Map Functionality
+-----------------------------------------------------*/
 ges.addToGoogleMap = function(locationObj,aniamtion){
 
 	ganimation = "";
@@ -52,17 +56,17 @@ ges.addToGoogleMap = function(locationObj,aniamtion){
 
 	//Now create a marker
 	var marker = new google.maps.Marker({
-        map: ges.map,
         position: locationObj.latLng,
         animation: ganimation,
         title: locationObj.location,
         link: locationObj.link
     });
 
-    //Now add a click event to it
-	google.maps.event.addListener(marker, 'click', function() {
+	ges.markerCluster.addMarker(marker);
+
+	/* google.maps.event.addListener(marker, 'click', function() {
 	    window.open(marker.link,'_blank');
-	  });
+	  }); */
 };
 
 
@@ -265,6 +269,7 @@ initialize = function() {
 	};
 	ges.map = new google.maps.Map(document.getElementById("ges"), mapOptions);
 
+    ges.markerCluster = new MarkerClusterer(ges.map, ges.markers, {});
 
 
 	//Get the locations (already in the DOM)
@@ -284,7 +289,7 @@ initialize = function() {
 	ges.initInfinateScroll();
 
 	//Alert on new ones
-	ges.alertOnNew();
+	//ges.alertOnNew();
 
 
 };
@@ -297,7 +302,7 @@ function loadScript() {
 	$("#main-content").css("padding-right","0px");
 
 	//Add some CSS
-	document.write("<style>.main-content-wrapper #search-results .ges-new {background:#DDFFBE;}#search-results .ges-added {background:#F5F5F5;} .ges-page {border-top: 2px dotted #000; }</style>");
+	document.write("<style>.main-content-wrapper #search-results .ges-new {background:#DDFFBE;}#search-results .ges-added {background:#F5F5F5;} .ges-page {border-top: 4px dotted #5C5C5C; }</style>");
 
 	$("#search-results").prepend("<div id='ges' style='height:400px;'></div>");
 	var script = document.createElement("script");

@@ -14,6 +14,7 @@ chrome.extension.sendMessage({}, function(response) {
 		        (document.head || document.body || document.documentElement).appendChild(scr);
 		}
 
+		injectJs(chrome.extension.getURL("src/lib/markerclusterer_compiled.js"));
 		injectJs(chrome.extension.getURL("src/inject/gmaps.js"));
 
 
