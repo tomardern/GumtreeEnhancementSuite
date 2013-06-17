@@ -18,7 +18,7 @@
   },
   "page_action": {
     "default_icon": "icons/icon19.png",
-    "default_title": "page action demo",
+    "default_title": "Gumtree Enhancement Suite",
     "default_popup": "src/page_action/page_action.html"
   },
   "web_accessible_resources":[

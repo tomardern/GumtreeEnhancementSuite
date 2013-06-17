@@ -5,7 +5,7 @@ Variables Required
 ----------------------------*/
 ges = {}; //Gumtree Enhancement Suite
 ges.adverts = []; //Known and unknown locations
-ges.advertsString = ""; //String of all the adverts we have seen
+ges.advertsString = "|"; //String of all the adverts we have seen
 ges.counter = 0;
 ges.map = {};
 ges.pageTitle = ""; //Default Page Title
@@ -13,21 +13,34 @@ ges.pageTitle = ""; //Default Page Title
 
 
 
-ges.getLocations = function(){
+ges.getLocations = function($listings){
 	locations = [];
-	locationString = "|";
+	locationString = "";
+	$html = $("<ul class='ges-page ad-listings ad-listings-style-row js_ads' />");
 
-
-	$listings = $(".ad-listings li");
 	$listings.each(function(){
 		loc = $(this).find(".location").text();
 		desc = $(this).find(".description");
 		featured = $(this).find(".featured").length;
-		locationString += desc.attr("id") + "|";
-		locations.push({"id": desc.attr("id"), "location": loc, "featured": featured,
-			"link" : desc.attr("href"), latLng: {} });
+
+
+		//If we don't already know about the listing
+		if (ges.advertsString.indexOf("|" + desc.attr("id") + "|") == -1){
+
+			//Add to HTML DOM
+			$html.append(this);
+
+			//Add to string
+			locationString += desc.attr("id") + "|";
+
+			//Add to information
+			locations.push({"id": desc.attr("id"), "location": loc, "featured": featured,
+				"link" : desc.attr("href"), latLng: {} });
+		}
 	});
-	return {locations: locations, toString: locationString};
+
+
+	return {locations: locations, asString: locationString, $html: $html};
 };
 
 
@@ -170,6 +183,8 @@ ges.loadTrigger = 0; //What position does the infinate load at
 ges.nextPageLoading = false;
 
 ges.loadInNextPage = function(){
+	console.log("GES","infinate","Page Loaded");
+
 	ges.page++; //Increase page count
 
 	//Ok, firstly find out what the next page is
@@ -181,14 +196,21 @@ ges.loadInNextPage = function(){
 
 	$element.load(nextPage + " #search-results", function(){
 
+		//Go though and find the ones which are not here
+
+		adverts = ges.getLocations($(".ad-listings li",$element));
+
 		//Do some tiding
 		//1. Replace main Pagination with new one
 		$("#pagination").replaceWith($("#pagination",$element).remove());
-		//2. Add The page number to the heading
-		$(".ad-group-header",$element).prepend("PAGE NUMBER " + ges.page + " || -------- || ");
+
 
 		//Insert into the main DOM
-		$afterThis.after($element);
+		$afterThis.after(adverts.$html);
+
+		//Store into the strings
+		ges.advertsString += adverts.asString;
+
 
 		//Remove Adsense - I'm Sorry, it just looks neater! (Sneaky hack to remove all instances)
 		$("div[id='js_adsense_footer']").remove();
@@ -247,10 +269,17 @@ initialize = function() {
 	};
 	ges.map = new google.maps.Map(document.getElementById("ges"), mapOptions);
 
-	//Get the locations
-	adverts = ges.getLocations()
+
+
+	//Get the locations (already in the DOM)
+	adverts = ges.getLocations($(".ad-listings li").clone());
+	//console.log(adverts);
+
+
 	ges.adverts = adverts.locations;
-	ges.advertsString = adverts.toString;
+	ges.advertsString += adverts.asString;
+
+
 	ges.pageTitle = document.title;
 
 	//Update the locations with Longitude/Latitude
@@ -261,7 +290,7 @@ initialize = function() {
 	ges.initInfinateScroll();
 
 	//Alert on new ones
-	ges.alertOnNew();
+	//ges.alertOnNew();
 
 
 };
