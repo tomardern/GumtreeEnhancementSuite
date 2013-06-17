@@ -1,6 +1,3 @@
-GumtreeEnhancementSuite
-=======================
-
 # Gumtree Enhancement Suite (Chrome Extension)
 
 ## Why?
