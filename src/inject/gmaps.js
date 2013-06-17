@@ -107,13 +107,16 @@ ges.updateLongLat = function(index){
 Time for never ending?
 -----------------------------------------------------*/
 ges.page = 1;
+ges.loadTrigger = 0; //What position does the infinate load at
+ges.nextPageLoading = false;
+
 ges.loadInNextPage = function(){
 	ges.page++; //Increase page count
 
 	//Ok, firstly find out what the next page is
 	nextPage = $(".pag-next a").attr("href");
 
-	$afterThis = $("#search-results .ad-listings:not(.featured)");
+	$afterThis = $("#search-results .ad-listings:not(.featured)").last();
 
 	$element = $("<div />"); //Ye old empty element trick
 
@@ -131,13 +134,33 @@ ges.loadInNextPage = function(){
 		//Remove Adsense - I'm Sorry, it just looks neater! (Sneaky hack to remove all instances)
 		$("div[id='js_adsense_footer']").remove();
 
+
+		//Update the load Trigger
+		ges.loadTrigger = $("#pagination").position().top - 1000;
+		ges.nextPageLoading = false; //Wait for the next scroll
+
 	});
-
-
 
 
 };
 
+
+ges.initInfinateScroll = function(){
+
+
+	//Update the load Trigger
+	ges.loadTrigger = $("#pagination").position().top - 1000;
+
+	$(window).scroll(function(ev){
+		if (!ges.nextPageLoading && $(this).scrollTop() > ges.loadTrigger){
+			ges.nextPageLoading = true;
+			ges.loadInNextPage();
+		}
+
+	});
+
+
+};
 
 
 
@@ -172,10 +195,8 @@ initialize = function() {
 	//ges.updateLongLat(0);
 
 
-	//Never Ending Time
-	ges.loadInNextPage();
-
-
+	//Load in the infinate scroll functionality
+	ges.initInfinateScroll();
 
 
 
