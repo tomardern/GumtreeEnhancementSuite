@@ -64,9 +64,9 @@ ges.addToGoogleMap = function(locationObj,aniamtion){
 
 	ges.markerCluster.addMarker(marker);
 
-	/* google.maps.event.addListener(marker, 'click', function() {
+	google.maps.event.addListener(marker, 'click', function() {
 	    window.open(marker.link,'_blank');
-	  }); */
+	  });
 };
 
 
@@ -121,7 +121,7 @@ ges.addLocationsToMap = function(locations,animation){
   		});
 
 		} else {
-			console.log("...........DONE..................");
+			//Added all the required to the map
 		}
 };
 
@@ -131,28 +131,28 @@ Alert on new item
 ges.alertOnNew = function(){
 	console.log("GES","alert","New Items");
 
-
-
 	//Set interval on checks
 	ges.interval = setInterval(function(){
-
 
 		$element = $("<div />"); //Element trick again
 		//Do a AJAX Load of this page
 		$element.load(window.location.href + "  .ad-listings li",function(){
 
+			//Filter from what we have loaded into just the <li>s
+			$locations = $("li", $element);
 
-			//Add class
-			adverts = ges.getLocations($(this));
+			//Filter the adverts to the ones we haven't seen yet
+			adverts = ges.getLocations($locations);
 
 			if (adverts.locations.length) {
-				//Insert into the main DOM
-				$(".ad-listings").before(adverts.$html);
+
+
+				$(".ad-listings").first().before(adverts.$html);
 
 				//Store into the strings
 				ges.advertsString += adverts.asString;
 
-				console.log("GES | ADDED " + adverts.locations.length + " MORE RESULTS");
+				console.log("GES","alert", "added " + adverts.locations.length + " results");
 
 				//Update the locations with Longitude/Latitude
 				ges.addLocationsToMap(adverts.locations,true);
@@ -161,14 +161,7 @@ ges.alertOnNew = function(){
 		});
 
 
-
-		/* $gesNew = $(".ges-new");
-
-		$gesNew.hover(function(){
-			$(this).removeClass("ges-new");
-		});
-
-	 	document.title = "(" + $gesNew.length + ") " + ges.pageTitle; */
+	 	/* document.title = "(" + $gesNew.length + ") " + ges.pageTitle; */
 
 	}, 10000);
 
@@ -269,7 +262,9 @@ initialize = function() {
 	};
 	ges.map = new google.maps.Map(document.getElementById("ges"), mapOptions);
 
-    ges.markerCluster = new MarkerClusterer(ges.map, ges.markers, {});
+    ges.markerCluster = new MarkerClusterer(ges.map, ges.markers, {
+    	 maxZoom: 13,
+    });
 
 
 	//Get the locations (already in the DOM)
@@ -289,7 +284,7 @@ initialize = function() {
 	ges.initInfinateScroll();
 
 	//Alert on new ones
-	//ges.alertOnNew();
+	ges.alertOnNew();
 
 
 };
