@@ -2,7 +2,9 @@
 (Chrome Extension)
 
 ## Why?
-GumTree's website is missing a few "modern" features. This makes trawling through their site a little bit of a pain. When looking for rooms, they can be gone within a couple of hours, especially in busy cities where demand is high.
+GumTree's website is missing a few "modern" features. This makes trawling through their site a little bit of a pain. 
+
+This extension makes looking for items on gumtree (especially flats) much much easier and simplier.
 
 ## What?
 This Chrome extension/plugin will has the following features:
@@ -15,13 +17,18 @@ This Chrome extension/plugin will has the following features:
 - [ ] Improved captions when a user clicks on the map
 - [ ] Colour of marker to show how expensive/how old the listing is
 
-## How?
-GumTree has no API. This is a Pain. This plugin uses jQuery and AJAX to screen-scrape the relevent pages for information. As the extension works in-page, it is not Cross Domain. The chrome extension uses the following:
+## How does it work?
+GumTree has no API. This is a Pain. This plugin uses jQuery and *lots* of AJAX to screen-scrape the relevent pages for information. As the extension works in-page, it gets around any cross-domain issues. The chrome extension uses the following:
 - Google Maps V3 API
 - MarkerClusterer Google Utility
 - Chrome Etensionizer http://extensionizr.com/
 - jQuery Library
 
+## How do I use it?
+1. Download repo and unzip
+2. Navigate to chrome://extensions
+3. Make sure "Developer mode" is turned on (top right)
+4. Click "Load unpacked extension" and find where you placed it
 
 ## Disclaimer
 Gumtree, I'm really sorry to have to develop this. Your site just didn't have the features I needed. The plugin is in a really early stage and 'hacked' together in an afternoon. 
